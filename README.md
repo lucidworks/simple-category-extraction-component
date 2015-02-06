@@ -99,7 +99,7 @@ curl http://localhost:8983/solr/collection1/update --data '<commit/>' -H 'Conten
 
 Now bring up the Solr Admin at http://localhost:8983/solr to make sure that you have a collection. Select collection1 from the Core Selector Dropdown button. Click on the Query tab and click on the "Execute Query" button. You should see the three documents that you just indexed.
 
-Now searching for 'red sofa' using the /infer handler will only bring back the first record, whereas searching for 'red sofa' with the select handler will bring back all three. (In my solrconfig.xml, I made the df to be 'description' in both the /select and /infer handlers so that we don't have to worry about searching the default 'text' field - OR I could have added  a copyField from description to text - OR I could have used 'text' for the 'description' field in the XML - always more than way to do cat skinnin').
+Now searching for 'red sofa' using the /infer handler will only bring back the first record, whereas searching for 'red sofa' with the select handler will bring back all three. (In my solrconfig.xml, I made the df to be 'description' in both the /select and /infer handlers so that we don't have to worry about searching the default 'text' field - OR I could have added  a copyField from description to text - OR I could have used 'text' for the 'description' field in the input SolrXML file  - always more than way to do cat skinnin').
 
 Out-Of-The-Box Solr  /request handler
 
