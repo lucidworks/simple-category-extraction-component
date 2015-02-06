@@ -6,10 +6,23 @@ described in http://lucidworks.com/blog/well-tempered-search-application-fugue/
 Solr Search Component that filters incoming query looking for category terms identified by a white list. Changes the query from q=foo bar to q=bar fq=category:foo if
 the keyword 'foo' is a instance of 'category'.
 
+To use this code, you will need to have Solr downloaded and installed. The latest released version is 4.10.3 (Solr 5.0 should be out soon, this code has not been tested with 5.0 yet).
+
+Compile the code by running Maven (if you don't have this, you will need to download it from Apache) from the directory that you downloaded this plugin code to:
+
+>mvn package
+
+This will generate a jar file in the ./target directory called category-extraction-component-1.0-SNAPSHOT.jar
+
+Copy this to the solr/lib folder in your solr directory (actually <where you downloaded solr>/example/solr/lib. If this 'lib' folder doesn't exist (and it won't for a new install), create it first then copy the jar file into it.
+
+
 =============================
 Configuration:
 
-For example, to create a category extractor for 'color' this would configure the search component in solrconfig.xml:
+For example, to create a category extractor for 'color' this would configure the search component in solrconfig.xml. You will need to modify the solrconfig.xml to do this, open this file in a text editor - or XML editor if you have one. The file is located in <solr install dir>/example/solr/collection1/conf).
+
+Add these elements:
 
 <pre>
 &lt;searchComponent name="colorExtractor" class="com.lucidworks.solr.query.CategoryExtractionComponent" >
@@ -49,6 +62,8 @@ And to create a request handler using this component, insert the component as a 
   &lt;/requestHandler>
 </pre>
 
+restart solr (java -jar start.jar will do fine for this demo) If you don't know how to do this, consult the Solr documentation.
+
 Loading the test data into a Solr collection:
 
 <pre>
@@ -71,7 +86,20 @@ Loading the test data into a Solr collection:
 &lt;/add>
 </pre>
 
-Now searching for 'red sofa' using the /infer handler will only bring back the first record, whereas searching for 'red sofa' with the select handler will bring back all three. (make the df to be 'description' in both the /select and /infer handlers so that we don't have to worry about searching the default 'text' field - OR to a copyField from description to text).
+You can do this using curl (on Linux) If you are on Windows ...
+
+cd to src/main/test/resources
+
+curl -X POST -H 'Content-Type: text/xml; charset=utf-8' -d @inputdata.xml http://localhost:8983/solr/collection1/update
+
+and force a commit using:
+
+curl http://localhost:8983/solr/collection1/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
+
+
+Now bring up the Solr Admin at http://localhost:8983/solr to make sure that you have a collection. Select collection1 from the Core Selector Dropdown button. Click on the Query tab and click on the "Execute Query" button. You should see the three documents that you just indexed.
+
+Now searching for 'red sofa' using the /infer handler will only bring back the first record, whereas searching for 'red sofa' with the select handler will bring back all three. (In my solrconfig.xml, I made the df to be 'description' in both the /select and /infer handlers so that we don't have to worry about searching the default 'text' field - OR I could have added  a copyField from description to text - OR I could have used 'text' for the 'description' field in the XML - always more than way to do cat skinnin').
 
 Out-Of-The-Box Solr  /request handler
 
