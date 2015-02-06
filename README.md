@@ -4,7 +4,7 @@ described in http://lucidworks.com/blog/well-tempered-search-application-fugue/
 
 ==============================
 Solr Search Component that filters incoming query looking for category terms identified by a white list. Changes the query from q=foo bar to q=bar fq=category:foo if
-the keyword 'foo' is a instance of 'category'.
+the keyword 'foo' is a instance of 'category'. The implementation uses a way cool suggestion by Erik Hatcher to use the FieldCache field values to determine what are valid values for a field.
 
 To use this code, you will need to have Solr downloaded and installed. The latest released version is 4.10.3 (Solr 5.0 should be out soon, this code has not been tested with 5.0 yet).
 
@@ -27,22 +27,6 @@ Add these elements:
 <pre>
 &lt;searchComponent name="colorExtractor" class="com.lucidworks.solr.query.CategoryExtractionComponent" >
       &lt;str name="field">color&lt;/str>
-      &lt;arr name="values">
-        &lt;str>red&lt;/str>
-        &lt;str>orange&lt;/str>
-        &lt;str>yellow&lt;/str>
-        &lt;str>blue&lt;/str>
-        &lt;str>green&lt;/str>
-        &lt;str>purple&lt;/str>
-        &lt;str>violet&lt;/str>
-        &lt;str>aquamarine&lt;/str>
-        &lt;str>chartreuse&lt;/str>
-        &lt;str>pink&lt;/str>
-        &lt;str>white&lt;/str>
-        &lt;str>black&lt;/str>
-        &lt;str>brown&lt;/str>
-        &lt;str>beige&lt;/str>
-      &lt;/arr>
     &lt;/searchComponent>
 </pre>
 
@@ -99,7 +83,9 @@ curl http://localhost:8983/solr/collection1/update --data '<commit/>' -H 'Conten
 
 Now bring up the Solr Admin at http://localhost:8983/solr to make sure that you have a collection. Select collection1 from the Core Selector Dropdown button. Click on the Query tab and click on the "Execute Query" button. You should see the three documents that you just indexed.
 
-Now searching for 'red sofa' using the /infer handler will only bring back the first record, whereas searching for 'red sofa' with the select handler will bring back all three. (In my solrconfig.xml, I made the df to be 'description' in both the /select and /infer handlers so that we don't have to worry about searching the default 'text' field - OR I could have added  a copyField from description to text - OR I could have used 'text' for the 'description' field in the input SolrXML file  - always more than way to do cat skinnin').
+The color field will now have the values: 'red' and 'blue'. The component now knows what the valid values for 'color' are - the ones that have been indexed into the collection!
+
+Now searching for 'red sofa' using the /infer handler will only bring back the first record, whereas searching for 'red sofa' with the select handler will bring back all three. (In my solrconfig.xml, I made the df to be 'description' in both the /select and /infer handlers so that we don't have to worry about searching the default 'text' field - OR I could have added  a copyField from description to text - OR I could have used 'text' for the 'description' field in the input SolrXML file  - always more than way to do cat skinnin'). Note that searching for 'green sofa' in either handler would bring back two records (the ones with sofa) because the index doesn't recognize 'green' as a sofa color because we haven't given it one to index yet. This means that all colors that are associated with a record by having a color facet value will work, no other colors will. And we can do this with ANY field that we can facet on!
 
 Out-Of-The-Box Solr  /request handler
 

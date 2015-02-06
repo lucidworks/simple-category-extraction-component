@@ -8,6 +8,12 @@ import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.handler.component.QueryComponent;
 import org.apache.solr.handler.component.ResponseBuilder;
 
+import org.apache.lucene.util.BytesRef;
+import org.apache.lucene.index.AtomicReader;
+import org.apache.lucene.index.SortedDocValues;
+import org.apache.lucene.search.FieldCache;
+import org.apache.solr.search.SolrIndexSearcher;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -22,22 +28,11 @@ public class CategoryExtractionComponent extends QueryComponent {
 	
   private static final Logger Log = LoggerFactory.getLogger( CategoryExtractionComponent.class );
     
-    
-  private HashSet<String> categorySet = new HashSet<String>( );
   private String categoryField;
 	
   @Override
   public void init( NamedList initArgs ) {
     Log.info( "init ..." );
-
-    // get the flat list? or the values of category
-    List<String> values = (List<String>)initArgs.get( "values" );
-    if ( values != null ) {
-      for (String value : values ) {
-        Log.info( "adding category value:" + value );
-        categorySet.add( value.toLowerCase( ).trim( ) );
-      }
-    }
       
     // the Solr-Lucene field that will be used to create the filter query
     String catField = (String)initArgs.get( "field" );
@@ -52,6 +47,9 @@ public class CategoryExtractionComponent extends QueryComponent {
   {
     SolrQueryRequest req = rb.req;
       
+    SolrIndexSearcher searcher = req.getSearcher();
+    SortedDocValues fieldValues = FieldCache.DEFAULT.getTermsIndex( searcher.getAtomicReader( ), categoryField );
+      
     SolrParams params = req.getParams( );
    
     ModifiableSolrParams modParams = new ModifiableSolrParams( params );
@@ -65,7 +63,8 @@ public class CategoryExtractionComponent extends QueryComponent {
     while (strtok.hasMoreTokens( ) ) {
       String tok = strtok.nextToken( ).toLowerCase( );
       Log.info( "got token: " + tok );
-      if (categorySet.contains( tok )) {
+      BytesRef key = new BytesRef( tok.getBytes() );
+      if (fieldValues.lookupTerm( key ) >= 0) {
         String fq = new String( categoryField + ":" + tok );
         Log.info( "adding fq " + fq );
         modParams.add( "fq", fq );
