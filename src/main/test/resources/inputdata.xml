@@ -1,0 +1,17 @@
+<add>
+  <doc>
+    <field name="id">1</field>
+    <field name="color">red</field>
+    <field name="description">This is the red sofa example. Please find with 'red sofa' query.</field>
+  </doc>
+  <doc>
+    <field name="id">2</field>
+    <field name="color">blue</field>
+    <field name="description">This is a blue sofa, it should only hit on sofas that are blue in color.</field>
+  </doc>
+  <doc>
+    <field name="id">3</field>
+    <field name="color">red</field>
+    <field name="description">This is a red beach ball. It is red in color but is not something that you should not sit on because you would tend to roll off.</field>
+  </doc>
+</add>
