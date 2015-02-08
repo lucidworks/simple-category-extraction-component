@@ -78,7 +78,7 @@ curl -X POST -H 'Content-Type: text/xml; charset=utf-8' -d @inputdata.xml http:/
 
 and force a commit using:
 
-curl http://localhost:8983/solr/collection1/update --data '<commit/>' -H 'Content-type:text/xml; charset=utf-8'
+curl http://localhost:8983/solr/collection1/update --data '&lt;commit/>' -H 'Content-type:text/xml; charset=utf-8'
 
 
 Now bring up the Solr Admin at http://localhost:8983/solr to make sure that you have a collection. Select collection1 from the Core Selector Dropdown button. Click on the Query tab and click on the "Execute Query" button. You should see the three documents that you just indexed.
