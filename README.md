@@ -1,5 +1,5 @@
 # simple-category-extraction-component
-Simple white-list based query introspection Solr Search Component - solves the 'red sofa' problem
+Simple Lucene FieldCache based  query introspection Solr Search Component - solves the 'red sofa' problem
 described in http://lucidworks.com/blog/well-tempered-search-application-fugue/
 
 ==============================
@@ -143,3 +143,5 @@ http://localhost:8983/solr/collection1/infer?q=red+sofa&wt=json&indent=true
 </pre>
 
 And now for my next magic trick ...
+
+(I call this technique 'autofaceting' - very powerful way to surface the intelligence that we built into our Lucene search index at index time.)
