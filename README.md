@@ -3,8 +3,7 @@ Simple Lucene FieldCache based  query introspection Solr Search Component - solv
 described in http://lucidworks.com/blog/well-tempered-search-application-fugue/
 
 ==============================
-Solr Search Component that filters incoming query looking for category terms identified by a white list. Changes the query from q=foo bar to q=bar fq=category:foo if
-the keyword 'foo' is a instance of 'category'. The implementation uses a way cool suggestion by Erik Hatcher to use the FieldCache field values to determine what are valid values for a field.
+Solr Search Component that filters incoming query looking for category terms identified by an index field that we would also use to facet on. Changes the query from q=foo bar to q=bar fq=category:foo if the keyword 'foo' is a field value of 'category'. The implementation uses a way cool suggestion by Erik Hatcher to use the FieldCache field values to determine what are valid values for a field.
 
 To use this code, you will need to have Solr downloaded and installed. The latest released version is 4.10.3 (Solr 5.0 should be out soon, this code has not been tested with 5.0 yet).
 
@@ -14,13 +13,13 @@ Compile the code by running Maven (if you don't have this, you will need to down
 
 This will generate a jar file in the ./target directory called category-extraction-component-1.0-SNAPSHOT.jar
 
-Copy this to the solr/lib folder in your solr directory (actually <where you downloaded solr>/example/solr/lib. If this 'lib' folder doesn't exist (and it won't for a new install), create it first then copy the jar file into it.
+Copy this to the solr/lib folder in your solr directory (actually &lt;where you downloaded solr>/example/solr/lib. If this 'lib' folder doesn't exist (and it won't for a new install), create it first then copy the jar file into it.
 
 
 =============================
 Configuration:
 
-For example, to create a category extractor for 'color' this would configure the search component in solrconfig.xml. You will need to modify the solrconfig.xml to do this, open this file in a text editor - or XML editor if you have one. The file is located in <solr install dir>/example/solr/collection1/conf).
+For example, to create a category extractor for 'color' this would configure the search component in solrconfig.xml. You will need to modify the solrconfig.xml to do this, open this file in a text editor - or XML editor if you have one. The file is located in &lt;solr install dir>/example/solr/collection1/conf).
 
 Add these elements:
 
