@@ -11,7 +11,7 @@
   <description>Solr Search Component for query introspection of category white lists</description>
   
   <properties>
-    <solr.version>4.10.2</solr.version>
+    <solr.version>8.8.2</solr.version>
     <lucene.version>4.10.2</lucene.version>
     <slf4j.version>1.7.5</slf4j.version>
   </properties>
